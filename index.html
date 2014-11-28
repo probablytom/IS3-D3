@@ -128,15 +128,15 @@
                         .attr("class", "g")
                         .attr("transform", function(d) { return "translate(" + x0(d.Council) + ",0)"; });
 
-                var ohjesus = 0;
+                var elementCounter = 0;
 
                 Council.selectAll("rect")
                         .data(function(d) { return d.percentYesVotes; })
                         .enter().append("rect")
                         .attr("width", x1.rangeBand())
                         .attr("x", function(d) { return x1(d.name); })
-                        .attr("y", function(d) { if (ohjesus%2 == 0) { ohjesus++; return y(d.value); } else { ohjesus++; return y2(d.value); }})
-                        .attr("height", function(d) { if (ohjesus%2 == 0) { ohjesus++; return height - y(d.value); } else { ohjesus++; return height - y2(d.value) }})
+                        .attr("y", function(d) { if (elementCounter%2 == 0) { elementCounter++; return y(d.value); } else { elementCounter++; return y2(d.value); }})
+                        .attr("height", function(d) { if (elementCounter%2 == 0) { elementCounter++; return height - y(d.value); } else { elementCounter++; return height - y2(d.value) }})
                         .style("fill", function(d) { return color(d.name); });
 
                 var legend = svg.selectAll(".legend")
