@@ -36,7 +36,7 @@
 	<script src="d3.js"></script>
 <script>
 
-    var margin = {top: 20, right: 20, bottom: 30, left: 40},
+    var margin = {top: 20, right: 20, bottom: 120, left: 40},
             width = 1080 - margin.left - margin.right,
             height = 720 - margin.top - margin.bottom;
 
@@ -75,12 +75,19 @@
 
         x0.domain(data.map(function(d) { return d.Council; }));
         x1.domain(councilNames).rangeRoundBands([0, x0.rangeBand()]);
-        y.domain([0, d3.max(data, function(d) { return d3.max(d.percentYesVotes, function(d) { return d.value; }); })]);
+        y.domain([0, 100]);
 
         svg.append("g")
                 .attr("class", "x axis")
                 .attr("transform", "translate(0," + height + ")")
-                .call(xAxis);
+                .call(xAxis)
+                .selectAll("text")
+                .style("text-anchor", "end")
+                .attr("dx", "-.8em")
+                .attr("dy", "-.6em")
+                .attr("transform", function(d) {
+                    return "rotate(-90)"
+                });
 
 
         // The label "Percentage Yes Votes"
@@ -113,6 +120,7 @@
                 .data(councilNames.slice().reverse())
                 .enter().append("g")
                 .attr("class", "legend")
+                .attr("transform", "rotate(-90)")
                 .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
 
         legend.append("rect")
