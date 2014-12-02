@@ -33,7 +33,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
-                <h1 class="center-block" style="padding-bottom: 20px;">Comparing percentage Yes votes to ()</h1>
+                <h1 id="graphHeading" class="center-block" style="padding-bottom: 20px;">Comparing percentage Yes votes to </h1>
             </div>
         </div>
 
@@ -62,9 +62,9 @@
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2">
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Depends</a></li>
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">On</a></li>
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Above</a></li>
+                                <li role="presentation"><a class="columnOption" role="menuitem" tabindex="-1" href="#">Depends</a></li>
+                                <li role="presentation"><a class="columnOption" role="menuitem" tabindex="-1" href="#">On</a></li>
+                                <li role="presentation"><a class="columnOption" role="menuitem" tabindex="-1" href="#">Above</a></li>
                             </ul>
                         </div>
                     </div>
@@ -109,18 +109,10 @@
 <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
 <script src="d3.js"></script>
-<script type="text/javascript">
-$(function() {
-
-    $('#dropdownMenu1').bind('click', function(e) {
-
-    });
-
-});
-
-</script>
 
 <script type="text/javascript">
+
+    var selected_column_name = "";
 
     var margin = {top: 20, right: 80, bottom: 120, left: 40},
             width = 1080 - margin.left - margin.right,
@@ -173,6 +165,7 @@ $(function() {
 		y.domain([0, 100]); // Domain we map to for percentages.
 		y2.domain([0, d3.max(data, function(d) { return d3.max(d.percentYesVotes, function(d) { return d.value*2; })})]);
 
+        // The labels for the bars on the x-axis.
         svg.append("g")
                 .attr("class", "x axis")
                 .attr("transform", "translate(0," + height + ")")
@@ -184,7 +177,6 @@ $(function() {
                 .attr("transform", function (d) {
                     return "rotate(-60)"
                 });
-
 
         // The label "Percentage Yes Votes"
         svg.append("g")
@@ -203,10 +195,10 @@ $(function() {
                 .attr("transform", "translate(" + width + ", 0)")
                 .append("text")
                 .attr("transform", "rotate(-90)")
-                .attr("y", 6)
+                .attr("y", -12)
                 .attr("dy", ".71em")
                 .style("text-anchor", "end")
-                .text("User choice");
+                .text(selected_column_name);
 
         var Council = svg.selectAll(".Council")
                 .data(data)
@@ -272,6 +264,21 @@ $(function() {
                 .text(function (d) {
                     return d;
                 });
+
+    });
+
+    // Start of jQuery
+    $(function() {
+
+
+
+        var heading = $('#graphHeading');
+
+        $('.columnOption').bind('click', function() {
+            selected_column_name = this.text;
+            heading.text("Comparing percentage Yes votes to "  + selected_column_name);
+
+        });
 
     });
 
