@@ -113,7 +113,7 @@
 $(function() {
 
     $('#dropdownMenu1').bind('click', function(e) {
-        console.log('hai');
+
     });
 
 });
@@ -122,7 +122,7 @@ $(function() {
 
 <script type="text/javascript">
 
-    var margin = {top: 20, right: 20, bottom: 120, left: 40},
+    var margin = {top: 20, right: 80, bottom: 120, left: 40},
             width = 1080 - margin.left - margin.right,
             height = 720 - margin.top - margin.bottom;
 
@@ -138,7 +138,7 @@ $(function() {
             .range([height, 0]);
 
     var color = d3.scale.ordinal()
-            .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+            .range(["#1C67B8", "#B81C55"]);
 
     var xAxis = d3.svg.axis()
             .scale(x0)
@@ -168,83 +168,111 @@ $(function() {
 		});
 
 		
-        x0.domain(data.map(function(d) { console.log(d); return d.Council; }));
+        x0.domain(data.map(function(d) { return d.Council; }));
         x1.domain(councilNames).rangeRoundBands([0, x0.rangeBand()]);
 		y.domain([0, 100]); // Domain we map to for percentages.
-		y2.domain([0, d3.max(data, function(d) { return d3.max(d.percentYesVotes, function(d) { return d.value; })})]);
+		y2.domain([0, d3.max(data, function(d) { return d3.max(d.percentYesVotes, function(d) { return d.value*2; })})]);
 
-                svg.append("g")
-                        .attr("class", "x axis")
-                        .attr("transform", "translate(0," + height + ")")
-                        .call(xAxis)
-                        .selectAll("text")
-                        .style("text-anchor", "end")
-                        .attr("dx", "-.8em")
-                        .attr("dy", "-.6em")
-                        .attr("transform", function(d) {
-                            return "rotate(-90)"
-                        });
+        svg.append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(0," + height + ")")
+                .call(xAxis)
+                .selectAll("text")
+                .style("text-anchor", "end")
+                .attr("dx", "-.8em")
+                .attr("dy", "-.4em")
+                .attr("transform", function (d) {
+                    return "rotate(-60)"
+                });
 
 
-                // The label "Percentage Yes Votes"
-                svg.append("g")
-                        .attr("class", "y axis")
-                        .call(yAxis)
-                        .append("text")
-                        .attr("transform", "rotate(-90)")
-                        .attr("y", 6)
-                        .attr("dy", ".71em")
-                        .style("text-anchor", "end")
-                        .text("Percentage Yes Votes");
+        // The label "Percentage Yes Votes"
+        svg.append("g")
+                .attr("class", "y axis")
+                .call(yAxis)
+                .append("text")
+                .attr("transform", "rotate(-90)")
+                .attr("y", 6)
+                .attr("dy", ".71em")
+                .style("text-anchor", "end")
+                .text("Percentage Yes Votes");
 
-                svg.append("g")
-                        .attr("class", "y2 axis")
-                        .call(y2Axis)
-                        .attr("transform", "translate(" + width + ", 0)")
-                        .append("text")
-                        .attr("transform", "rotate(-90)")
-                        .attr("y", 6)
-                        .attr("dy", ".71em")
-                        .style("text-anchor", "end")
-                        .text("User choice");
+        svg.append("g")
+                .attr("class", "y2 axis")
+                .call(y2Axis)
+                .attr("transform", "translate(" + width + ", 0)")
+                .append("text")
+                .attr("transform", "rotate(-90)")
+                .attr("y", 6)
+                .attr("dy", ".71em")
+                .style("text-anchor", "end")
+                .text("User choice");
 
-                var Council = svg.selectAll(".Council")
-                        .data(data)
-                        .enter().append("g")
-                        .attr("class", "g")
-                        .attr("transform", function(d) { return "translate(" + x0(d.Council) + ",0)"; });
+        var Council = svg.selectAll(".Council")
+                .data(data)
+                .enter().append("g")
+                .attr("class", "g")
+                .attr("transform", function (d) {
+                    return "translate(" + x0(d.Council) + ",0)";
+                });
 
-                var elementCounter = 0;
+        var elementCounter = 0;
 
-                Council.selectAll("rect")
-                        .data(function(d) { return d.percentYesVotes; })
-                        .enter().append("rect")
-                        .attr("width", x1.rangeBand())
-                        .attr("x", function(d) { return x1(d.name); })
-                        .attr("y", function(d) { if (elementCounter%2 == 0) { elementCounter++; return y(d.value); } else { elementCounter++; return y2(d.value); }})
-                        .attr("height", function(d) { if (elementCounter%2 == 0) { elementCounter++; return height - y(d.value); } else { elementCounter++; return height - y2(d.value) }})
-                        .style("fill", function(d) { return color(d.name); });
+        Council.selectAll("rect")
+                .data(function (d) {
+                    return d.percentYesVotes;
+                })
+                .enter().append("rect")
+                .attr("width", x1.rangeBand())
+                .attr("x", function (d) {
+                    return x1(d.name);
+                })
+                .attr("y", function (d) {
+                    if (elementCounter % 2 == 0) {
+                        elementCounter++;
+                        return y(d.value);
+                    } else {
+                        elementCounter++;
+                        return y2(d.value);
+                    }
+                })
+                .attr("height", function (d) {
+                    if (elementCounter % 2 == 0) {
+                        elementCounter++;
+                        return height - y(d.value);
+                    } else {
+                        elementCounter++;
+                        return height - y2(d.value)
+                    }
+                })
+                .style("fill", function (d) {
+                    return color(d.name);
+                });
 
-                var legend = svg.selectAll(".legend")
-                        .data(councilNames.slice().reverse())
-                        .enter().append("g")
-                        .attr("class", "legend")
-                        .attr("transform", "rotate(-90)")
-                        .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+        var legend = svg.selectAll(".legend")
+                .data(councilNames.slice().reverse())
+                .enter().append("g")
+                .attr("class", "legend")
+                .attr("transform", "rotate(-90)")
+                .attr("transform", function (d, i) {
+                    return "translate(0," + i * 20 + ")";
+                });
 
-                legend.append("rect")
-                        .attr("x", width - 208)
-                        .attr("width", 18)
-                        .attr("height", 18)
-                        .style("fill", color);
+        legend.append("rect")
+                .attr("x", width - 208)
+                .attr("width", 18)
+                .attr("height", 18)
+                .style("fill", color);
 
-                legend.append("text")
-                        .attr("x", width - 24)
-                        .attr("y", 9)
-                        .attr("dy", ".35em")
-                        .style("text-anchor", "end")
-                        .text(function(d) { return d; });
+        legend.append("text")
+                .attr("x", width - 24)
+                .attr("y", 9)
+                .attr("dy", ".35em")
+                .style("text-anchor", "end")
+                .text(function (d) {
+                    return d;
+                });
 
-            });
+    });
 
 </script>
