@@ -41,7 +41,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
-                <h1 id="graphHeading" class="center-block" style="padding-bottom: 20px;">Comparing percentage Yes votes to </h1>
+                <h1 id="graphHeading" class="center-block" style="padding-bottom: 20px;">Comparing <span style="color: #1C67B8">percentage Yes votes</span> to <span id="selected-col" style="color: #B81C55"></span></h1>
             </div>
         </div>
 
@@ -71,7 +71,7 @@
                             </button>
                             <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2">
                                 <li role="presentation"><a class="columnOption" role="menuitem" tabindex="-1" href="#">Employment domain 2012 rate (%)</a></li>
-                                <li role="presentation"><a class="columnOption" role="menuitem" tabindex="-1" href="#">On</a></li>
+                                <li role="presentation"><a class="columnOption" role="menuitem" tabindex="-1" href="#">Income domain 2012 rate (%)</a></li>
                                 <li role="presentation"><a class="columnOption" role="menuitem" tabindex="-1" href="#">Above</a></li>
                             </ul>
                         </div>
@@ -143,7 +143,7 @@ function paint() {
             .range([height, 0]);
 
     var color = d3.scale.ordinal()
-            .range(["#1C67B8", "#B81C55", "#00e390"]);
+            .range(["#1C67B8", "#B81C55"]);
 
     var xAxis = d3.svg.axis()
             .scale(x0)
@@ -336,13 +336,13 @@ function paint() {
     $(function() {
         paint();
         selected_column_name = "Employment domain 2012 rate (%)";
-        var heading = $('#graphHeading');
-        heading.text("Comparing percentage Yes votes to "  + selected_column_name);
+        var selectedCol = $('#selected-col');
+        selectedCol.text(selected_column_name);
 
         $('.columnOption').bind('click', function(e) {
             e.preventDefault();
             selected_column_name = this.text;
-            heading.text("Comparing percentage Yes votes to "  + selected_column_name);
+            selectedCol.text(selected_column_name);
             d3.select("svg").remove();
             paint();
         });
