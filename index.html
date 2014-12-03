@@ -62,7 +62,7 @@
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2">
-                                <li role="presentation"><a class="columnOption" role="menuitem" tabindex="-1" href="#">Depends</a></li>
+                                <li role="presentation"><a class="columnOption" role="menuitem" tabindex="-1" href="#">Employment domain 2012 rate (%)</a></li>
                                 <li role="presentation"><a class="columnOption" role="menuitem" tabindex="-1" href="#">On</a></li>
                                 <li role="presentation"><a class="columnOption" role="menuitem" tabindex="-1" href="#">Above</a></li>
                             </ul>
@@ -112,7 +112,10 @@
 
 <script type="text/javascript">
 
-    var selected_column_name = "";
+
+var selected_column_name = "";
+
+function paint() {
 
     var margin = {top: 20, right: 80, bottom: 120, left: 40},
             width = 1080 - margin.left - margin.right,
@@ -153,17 +156,28 @@
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     d3.csv("data/yesPercentage.csv", function(error, data) {
+
         var councilNames = d3.keys(data[0]).filter(function(key) { return key !== "Council"; });
 
+        console.log(councilNames);  // Array [ "Yes Percentage(%)", "Employment domain 2012 rate (%)" ]
+
         data.forEach(function(d) {
-			d.percentYesVotes = councilNames.map(function(name) { return {name: name, value: +d[name]}; });
+			d.percentYesVotes = councilNames.map(function(name) { console.log(name, +d[name]); return {name: name, value: +d[name]}; });
 		});
 
-		
+
+        console.log(data);
+
         x0.domain(data.map(function(d) { return d.Council; }));
         x1.domain(councilNames).rangeRoundBands([0, x0.rangeBand()]);
 		y.domain([0, 100]); // Domain we map to for percentages.
-		y2.domain([0, d3.max(data, function(d) { return d3.max(d.percentYesVotes, function(d) { return d.value; })})]);
+        y2.domain([0, d3.max(data, function (d) {
+            return d3.max(d.percentYesVotes, function (d) {
+                if (d.name == selected_column_name) {  // TODO: change this to the selected column name
+                    return d.value * 2;
+                }
+            })
+        })]);
 
         // The labels for the bars on the x-axis.
         svg.append("g")
@@ -231,7 +245,6 @@
                 .attr("height", function (d) {
                     if (elementCounter % 2 == 0) {
                         elementCounter++;
-                        console.lo(height);
                         return height - y(d.value);
                     } else {
                         elementCounter++;
@@ -242,15 +255,17 @@
                     return color(d.name);
                 });
 
+        var SPACING_BETWEEN_KEYS = 20;
         var legend = svg.selectAll(".legend")
                 .data(councilNames.slice().reverse())
                 .enter().append("g")
                 .attr("class", "legend")
                 .attr("transform", "rotate(-90)")
                 .attr("transform", function (d, i) {
-                    return "translate(0," + i * 20 + ")";
+                    return "translate(0," + i * SPACING_BETWEEN_KEYS + ")";
                 });
 
+        // Colours in the key (at the top right of the graph)
         legend.append("rect")
                 .attr("x", width - 208)
                 .attr("width", 18)
@@ -268,15 +283,21 @@
 
     });
 
+
+}
+
+
     // Start of jQuery
     $(function() {
-
+        paint();
         var heading = $('#graphHeading');
 
         $('.columnOption').bind('click', function(e) {
             e.preventDefault();
             selected_column_name = this.text;
             heading.text("Comparing percentage Yes votes to "  + selected_column_name);
+            d3.select("svg").remove();
+            paint();
         });
 
     });
