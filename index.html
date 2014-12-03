@@ -33,6 +33,10 @@
         .grid path {
             stroke-width: 0;
         }
+
+        .btn {
+            width: 246px;
+        }
     </style>
 
 </head>
@@ -46,7 +50,7 @@
         </div>
 
         <div class="row">
-            <div class="col-md-2">
+            <div class="col-lg-2">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h4>Select secondary column:</h4>
@@ -62,7 +66,7 @@
                         </div>
                         <br/>
                         <div class="dropdown">
-                            <button id="column" class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-expanded="true">
+                            <button id="column-dropdown-button" class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-expanded="true">
                                 Select column
                                 <span class="caret"></span>
                             </button>
@@ -100,7 +104,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-10" id="referendumGraph"></div>
+            <div class="col-lg-10" id="referendumGraph"></div>
         </div>
     </div>
 
@@ -335,7 +339,7 @@ function paint() {
         // The mappings of the categories to the list of values
         var categories = {};
         categories['Employment'] = ['Employment domain 2012 rate (%)', 'Employment domain 2012 rank'];
-        categories['Education'] = ['Education, Skills and Training domain 2012 rank1', 'People aged 16-19 not in full time education, employment or training rate (School Leavers 2009/10-2010-11, DWP 2010 and 2011)'];
+        categories['Education'] = ['Education, Skills and Training domain 2012 rank1', 'People aged 16-19 not in full time education, employment or training rate'];
         categories['Income'] = ['Income domain 2012 rate (%)', 'Income domain 2012 rank'];
 
         var categoryDropdown = $('#category-dropdown');
@@ -344,13 +348,18 @@ function paint() {
         });
 
 
-        var columnDropdown = $('#column-dropdown');
+        var columnDropdown = $('#column-dropdown')
+
+        var categoryDropdownButton = $('#category-dropdown-button');
+        var columnDropdownButton = $('#column-dropdown-button');
 
         $('.categoryOption').on('click', function (e) {
             // Refresh the columns list
             columnDropdown.html('');
             var columns = categories[this.text];
             console.log(columns);
+            categoryDropdownButton.html(this.text + ' <span class="caret"></span>');
+            columnDropdownButton.html('Select a column <span class="caret"></span>');
             for (var colIdx = 0; colIdx < columns.length; colIdx++) {
                 console.log(columns[colIdx]);
                 columnDropdown.append('<li role="presentation"><a class="columnOption" role="menuitem" tabindex="-1" href="#">' + columns[colIdx] + '</a></li>')
@@ -360,7 +369,7 @@ function paint() {
                 console.log("selected a column");
                 selected_column_name = this.text;
                 selectedCol.text(selected_column_name);
-                columnDropdown.text(selected_column_name);
+                columnDropdownButton.html(selected_column_name + ' <span class="caret"></span>');
                 d3.select("svg").remove();
                 paint();
             });
