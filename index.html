@@ -133,7 +133,7 @@ function paint() {
             .range([height, 0]);
 
     var color = d3.scale.ordinal()
-            .range(["#1C67B8", "#B81C55"]);
+            .range(["#1C67B8", "#B81C55", "#00e390"]);
 
     var xAxis = d3.svg.axis()
             .scale(x0)
@@ -157,13 +157,18 @@ function paint() {
 
     d3.csv("data/yesPercentage.csv", function(error, data) {
 
-        var councilNames = d3.keys(data[0]).filter(function(key) { return key !== "Council"; });
+        var councilNames = d3.keys(data[0]).filter(function (key) {
+            return key !== "Council";
+        });
 
-        console.log(councilNames);  // Array [ "Yes Percentage(%)", "Employment domain 2012 rate (%)" ]
+//        console.log(councilNames);  // Array [ "Yes Percentage(%)", "Employment domain 2012 rate (%)" ]
 
-        data.forEach(function(d) {
-			d.percentYesVotes = councilNames.map(function(name) { console.log(name, +d[name]); return {name: name, value: +d[name]}; });
-		});
+        data.forEach(function (d) {
+            d.percentYesVotes = councilNames.map(function (name) {
+                console.log(name, selected_column_name);
+                return {name: name, value: +d[name]};
+            });
+        });
 
 
         console.log(data);
@@ -226,6 +231,7 @@ function paint() {
 
         Council.selectAll("rect")
                 .data(function (d) {
+                    // TODO we need to fix the data in here so that it only contains the required information
                     return d.percentYesVotes;
                 })
                 .enter().append("rect")
@@ -290,7 +296,9 @@ function paint() {
     // Start of jQuery
     $(function() {
         paint();
+        selected_column_name = "Employment domain 2012 rate (%)";
         var heading = $('#graphHeading');
+        heading.text("Comparing percentage Yes votes to "  + selected_column_name);
 
         $('.columnOption').bind('click', function(e) {
             e.preventDefault();
