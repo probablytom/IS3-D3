@@ -123,6 +123,8 @@
 
 var selected_column_name = "";
 
+
+
 function paint() {
 
     var margin = {top: 20, right: 80, bottom: 120, left: 40},
@@ -162,6 +164,14 @@ function paint() {
             .attr("height", height + margin.top + margin.bottom)
             .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+     function make_y_axis() {
+        return d3.svg.axis()
+        .scale(y)
+        .orient("left")
+        .ticks(10)
+    }
+
 
     d3.csv("data/yesPercentage.csv", function(error, data) {
 
@@ -204,6 +214,14 @@ function paint() {
                 .attr("transform", function (d) {
                     return "rotate(-60)"
                 });
+
+         // Drawing the gridlines of y axis
+        svg.append("g")
+        .attr("class", "grid")
+        .call(make_y_axis()
+        .tickSize(-width, 0, 0)
+        .tickFormat("")
+        )
 
         // The label "Percentage Yes Votes"
         svg.append("g")
