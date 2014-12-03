@@ -25,82 +25,91 @@
             display: none;
         }
 
+        .grid .tick {
+            stroke: lightblue;
+            stroke-opacity: 0.7;
+            shape-rendering: crispEdges;
+        }
+        .grid path {
+            stroke-width: 0;
+        }
+
     </style>
 
 </head>
 <body>
 
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-12">
-                <h1 id="graphHeading" class="center-block" style="padding-bottom: 20px;">Comparing percentage Yes votes to </h1>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-2">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4>Select secondary column:</h4>
-                    </div>
-                    <div class="panel-body">
-                        <div class="dropdown">
-                            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
-                                Select category
-                                <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Employment</a></li>
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Education</a></li>
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Income</a></li>
-                            </ul>
-                        </div>
-                        <br/>
-                        <div class="dropdown">
-                            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-expanded="true">
-                                Select column
-                                <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2">
-                                <li role="presentation"><a class="columnOption" role="menuitem" tabindex="-1" href="#">Employment domain 2012 rate (%)</a></li>
-                                <li role="presentation"><a class="columnOption" role="menuitem" tabindex="-1" href="#">On</a></li>
-                                <li role="presentation"><a class="columnOption" role="menuitem" tabindex="-1" href="#">Above</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4>Apply transformations:</h4>
-                    </div>
-                    <div class="panel-body">
-                        <div class="dropdown">
-                            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu3" data-toggle="dropdown" aria-expanded="true">
-                                Select category
-                                <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu3">
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Transformation 1</a></li>
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Transformation 2</a></li>
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Transformation 3</a></li>
-                            </ul>
-                        </div>
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox"> Show trend lines
-                            </label>
-                        </div>
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox"> Show grid lines
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-10" id="referendumGraph"></div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 id="graphHeading" class="center-block" style="padding-bottom: 20px;">Comparing percentage Yes votes to </h1>
         </div>
     </div>
+
+    <div class="row">
+        <div class="col-md-2">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4>Select secondary column:</h4>
+                </div>
+                <div class="panel-body">
+                    <div class="dropdown">
+                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+                            Select category
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Employment</a></li>
+                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Education</a></li>
+                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Income</a></li>
+                        </ul>
+                    </div>
+                    <br/>
+                    <div class="dropdown">
+                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-expanded="true">
+                            Select column
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2">
+                            <li role="presentation"><a class="columnOption" role="menuitem" tabindex="-1" href="#">Employment domain 2012 rate (%)</a></li>
+                            <li role="presentation"><a class="columnOption" role="menuitem" tabindex="-1" href="#">On</a></li>
+                            <li role="presentation"><a class="columnOption" role="menuitem" tabindex="-1" href="#">Above</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4>Apply transformations:</h4>
+                </div>
+                <div class="panel-body">
+                    <div class="dropdown">
+                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu3" data-toggle="dropdown" aria-expanded="true">
+                            Select category
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu3">
+                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Transformation 1</a></li>
+                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Transformation 2</a></li>
+                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Transformation 3</a></li>
+                        </ul>
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox"> Show trend lines
+                        </label>
+                    </div>
+                    <div class="checkbox" id="gridline-checkbox">
+                        <label>
+                            <input type="checkbox"> Show grid lines
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-10" id="referendumGraph"></div>
+    </div>
+</div>
 
 </body>
 
@@ -155,6 +164,15 @@ function paint() {
             .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+    function make_y_axis() {
+        return d3.svg.axis()
+                .scale(y)
+                .orient("left")
+                .ticks(10)
+    }
+
+
+
     d3.csv("data/yesPercentage.csv", function(error, data) {
 
         var councilNames = d3.keys(data[0]).filter(function (key) {
@@ -168,14 +186,13 @@ function paint() {
                 console.log(name, selected_column_name);
                 return {name: name, value: +d[name]};
             });
-        });
 
 
         console.log(data);
 
         x0.domain(data.map(function(d) { return d.Council; }));
         x1.domain(councilNames).rangeRoundBands([0, x0.rangeBand()]);
-		y.domain([0, 100]); // Domain we map to for percentages.
+        y.domain([0, 100]); // Domain we map to for percentages.
         y2.domain([0, d3.max(data, function (d) {
             return d3.max(d.percentYesVotes, function (d) {
                 if (d.name == selected_column_name) {  // TODO: change this to the selected column name
@@ -183,6 +200,7 @@ function paint() {
                 }
             })
         })]);
+
 
         // The labels for the bars on the x-axis.
         svg.append("g")
@@ -196,6 +214,14 @@ function paint() {
                 .attr("transform", function (d) {
                     return "rotate(-60)"
                 });
+
+        // Drawing the gridlines of y axis
+//        svg.append("g")
+//                .attr("class", "grid")
+//                .call(make_y_axis()
+//                        .tickSize(-width, 0, 0)
+//                        .tickFormat("")
+//        );
 
         // The label "Percentage Yes Votes"
         svg.append("g")
@@ -218,6 +244,7 @@ function paint() {
                 .attr("dy", ".71em")
                 .style("text-anchor", "end")
                 .text(selected_column_name);
+
 
         var Council = svg.selectAll(".Council")
                 .data(data)
@@ -287,27 +314,27 @@ function paint() {
                     return d;
                 });
 
+
     });
-
-
-}
-
+});
 
     // Start of jQuery
     $(function() {
         paint();
         selected_column_name = "Employment domain 2012 rate (%)";
         var heading = $('#graphHeading');
-        heading.text("Comparing percentage Yes votes to "  + selected_column_name);
+        heading.text("Comparing percentage Yes votes to " + selected_column_name);
 
-        $('.columnOption').bind('click', function(e) {
+        $('.columnOption').bind('click', function (e) {
             e.preventDefault();
             selected_column_name = this.text;
-            heading.text("Comparing percentage Yes votes to "  + selected_column_name);
+            heading.text("Comparing percentage Yes votes to " + selected_column_name);
             d3.select("svg").remove();
             paint();
         });
-
     });
+}
+
+
 
 </script>
