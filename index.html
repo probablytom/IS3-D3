@@ -53,26 +53,20 @@
                     </div>
                     <div class="panel-body">
                         <div class="dropdown">
-                            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+                            <button id="category-dropdown-button" class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
                                 Select category
                                 <span class="caret"></span>
                             </button>
                             <ul id="category-dropdown" class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Employment</a></li>
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Education</a></li>
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Income</a></li>
                             </ul>
                         </div>
                         <br/>
                         <div class="dropdown">
-                            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-expanded="true">
+                            <button id="column" class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-expanded="true">
                                 Select column
                                 <span class="caret"></span>
                             </button>
-                            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2">
-                                <li role="presentation"><a class="columnOption" role="menuitem" tabindex="-1" href="#">Employment domain 2012 rate (%)</a></li>
-                                <li role="presentation"><a class="columnOption" role="menuitem" tabindex="-1" href="#">Income domain 2012 rate (%)</a></li>
-                                <li role="presentation"><a class="columnOption" role="menuitem" tabindex="-1" href="#">Above</a></li>
+                            <ul id="column-dropdown" class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2">
                             </ul>
                         </div>
                     </div>
@@ -338,22 +332,39 @@ function paint() {
         var selectedCol = $('#selected-col');
         selectedCol.text(selected_column_name);
 
-        $('.columnOption').bind('click', function(e) {
-            e.preventDefault();
-            selected_column_name = this.text;
-            selectedCol.text(selected_column_name);
-            d3.select("svg").remove();
-            paint();
-        });
-
         // The mappings of the categories to the list of values
         var categories = {};
         categories['Employment'] = ['Employment domain 2012 rate (%)', 'Employment domain 2012 rank'];
         categories['Education'] = ['Education, Skills and Training domain 2012 rank1', 'People aged 16-19 not in full time education, employment or training rate (School Leavers 2009/10-2010-11, DWP 2010 and 2011)'];
         categories['Income'] = ['Income domain 2012 rate (%)', 'Income domain 2012 rank'];
 
+        var categoryDropdown = $('#category-dropdown');
+        $.each(categories, function(category) {
+            categoryDropdown.append('<li role="presentation"><a class="categoryOption" role="menuitem" tabindex="-1" href="#">' + category + '</a></li>');
+        });
 
 
+        var columnDropdown = $('#column-dropdown');
+
+        $('.categoryOption').on('click', function (e) {
+            // Refresh the columns list
+            columnDropdown.html('');
+            var columns = categories[this.text];
+            console.log(columns);
+            for (var colIdx = 0; colIdx < columns.length; colIdx++) {
+                console.log(columns[colIdx]);
+                columnDropdown.append('<li role="presentation"><a class="columnOption" role="menuitem" tabindex="-1" href="#">' + columns[colIdx] + '</a></li>')
+            }
+
+            $('.columnOption').bind('click', function(e) {
+                console.log("selected a column");
+                selected_column_name = this.text;
+                selectedCol.text(selected_column_name);
+                columnDropdown.text(selected_column_name);
+                d3.select("svg").remove();
+                paint();
+            });
+        });
 
     });
 
