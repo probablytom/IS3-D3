@@ -267,7 +267,6 @@ function paint() {
 
         Council.selectAll("rect")
                 .data(function (d) {
-                    // TODO we need to fix the data in here so that it only contains the required information
                     return d.percentYesVotes;
                 })
                 .enter().append("rect")
@@ -309,14 +308,15 @@ function paint() {
 
         // Colours in the key (at the top right of the graph)
         legend.append("rect")
-                .attr("x", width - 208)
+                .attr("x", width - 64)
+                .attr("y", 18)
                 .attr("width", 18)
                 .attr("height", 18)
                 .style("fill", color);
 
         legend.append("text")
-                .attr("x", width - 24)
-                .attr("y", 9)
+                .attr("x", width - 68)
+                .attr("y", 24)
                 .attr("dy", ".35em")
                 .style("text-anchor", "end")
                 .text(function (d) {
