@@ -173,7 +173,23 @@ function paint() {
     }
 
 
-    d3.csv("data/yesPercentage.csv", function(error, data) {
+    d3.csv("data/yesPercentage.csv", function(error, oldData) {
+
+        var data = [];
+        for (var dataIdx = 0; dataIdx < oldData.length; dataIdx++) {
+            var dataItem = oldData[dataIdx];
+
+            var processedItem = {
+                'Council': dataItem['Council'],
+                'Yes Percentage(%)': dataItem['Yes Percentage(%)']
+            };
+
+            processedItem[selected_column_name] = dataItem[selected_column_name];
+
+            data.push(processedItem);
+        }
+
+        console.log(data);
 
         var councilNames = d3.keys(data[0]).filter(function (key) {
             return key !== "Council";
@@ -183,13 +199,10 @@ function paint() {
 
         data.forEach(function (d) {
             d.percentYesVotes = councilNames.map(function (name) {
-                console.log(name, selected_column_name);
                 return {name: name, value: +d[name]};
             });
         });
 
-
-        console.log(data);
 
         x0.domain(data.map(function(d) { return d.Council; }));
         x1.domain(councilNames).rangeRoundBands([0, x0.rangeBand()]);
