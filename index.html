@@ -57,7 +57,7 @@
                                 Select category
                                 <span class="caret"></span>
                             </button>
-                            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                            <ul id="category-dropdown" class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
                                 <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Employment</a></li>
                                 <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Education</a></li>
                                 <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Income</a></li>
@@ -189,23 +189,22 @@ function paint() {
             data.push(processedItem);
         }
 
-        console.log(data);
-
-        var councilNames = d3.keys(data[0]).filter(function (key) {
+        // We care about all columns except the one where the we specify the name of the council.
+        var dataHeadings = d3.keys(data[0]).filter(function (key) {
             return key !== "Council";
         });
 
-//        console.log(councilNames);  // Array [ "Yes Percentage(%)", "Employment domain 2012 rate (%)" ]
+        console.log(dataHeadings);  // Array [ "Yes Percentage(%)", "Employment domain 2012 rate (%)", ... ]
 
         data.forEach(function (d) {
-            d.percentYesVotes = councilNames.map(function (name) {
+            d.percentYesVotes = dataHeadings.map(function (name) {
                 return {name: name, value: +d[name]};
             });
         });
 
 
         x0.domain(data.map(function(d) { return d.Council; }));
-        x1.domain(councilNames).rangeRoundBands([0, x0.rangeBand()]);
+        x1.domain(dataHeadings).rangeRoundBands([0, x0.rangeBand()]);
 		y.domain([0, 100]); // Domain we map to for percentages.
         y2.domain([0, d3.max(data, function (d) {
             return d3.max(d.percentYesVotes, function (d) {
@@ -245,7 +244,7 @@ function paint() {
                 .attr("y", 6)
                 .attr("dy", ".71em")
                 .style("text-anchor", "end")
-                .text("Percentage Yes Votes");
+                .text("Yes Votes (%)");
 
         svg.append("g")
                 .attr("class", "y2 axis")
@@ -302,7 +301,7 @@ function paint() {
 
         var SPACING_BETWEEN_KEYS = 20;
         var legend = svg.selectAll(".legend")
-                .data(councilNames.slice().reverse())
+                .data(dataHeadings.slice().reverse())
                 .enter().append("g")
                 .attr("class", "legend")
                 .attr("transform", "rotate(-90)")
@@ -346,6 +345,15 @@ function paint() {
             d3.select("svg").remove();
             paint();
         });
+
+        // The mappings of the categories to the list of values
+        var categories = {};
+        categories['Employment'] = ['Employment domain 2012 rate (%)', 'Employment domain 2012 rank'];
+        categories['Education'] = ['Education, Skills and Training domain 2012 rank1', 'People aged 16-19 not in full time education, employment or training rate (School Leavers 2009/10-2010-11, DWP 2010 and 2011)'];
+        categories['Income'] = ['Income domain 2012 rate (%)', 'Income domain 2012 rank'];
+
+
+
 
     });
 
