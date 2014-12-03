@@ -33,6 +33,10 @@
         .grid path {
             stroke-width: 0;
         }
+
+        .btn {
+            width: 246px;
+        }
     </style>
 
 </head>
@@ -40,43 +44,37 @@
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-lg-12">
             <h1 id="graphHeading" class="center-block" style="padding-bottom: 20px;">Comparing <span style="color: #1C67B8">percentage Yes votes</span> to <span id="selected-col" style="color: #B81C55"></span></h1>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-2">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4>Select secondary column:</h4>
-                </div>
-                <div class="panel-body">
-                    <div class="dropdown">
-                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
-                            Select category
-                            <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Employment</a></li>
-                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Education</a></li>
-                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Income</a></li>
-                        </ul>
+        <div class="row">
+            <div class="col-lg-2">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4>Select secondary column:</h4>
                     </div>
-                    <br/>
-                    <div class="dropdown">
-                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-expanded="true">
-                            Select column
-                            <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2">
-                            <li role="presentation"><a class="columnOption" role="menuitem" tabindex="-1" href="#">Employment domain 2012 rate (%)</a></li>
-                            <li role="presentation"><a class="columnOption" role="menuitem" tabindex="-1" href="#">Income domain 2012 rate (%)</a></li>
-                            <li role="presentation"><a class="columnOption" role="menuitem" tabindex="-1" href="#">Above</a></li>
-                        </ul>
+                    <div class="panel-body">
+                        <div class="dropdown">
+                            <button id="category-dropdown-button" class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+                                Select category
+                                <span class="caret"></span>
+                            </button>
+                            <ul id="category-dropdown" class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                            </ul>
+                        </div>
+                        <br/>
+                        <div class="dropdown">
+                            <button id="column-dropdown-button" class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-expanded="true">
+                                Select column
+                                <span class="caret"></span>
+                            </button>
+                            <ul id="column-dropdown" class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2">
+                            </ul>
+                        </div>
                     </div>
                 </div>
-            </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4>Apply transformations:</h4>
@@ -105,8 +103,12 @@
                     </div>
                 </div>
             </div>
+
+            </div>
+
+
+            <div class="col-lg-10" id="referendumGraph"></div>
         </div>
-        <div class="col-md-10" id="referendumGraph"></div>
     </div>
 </div>
 
@@ -189,7 +191,7 @@ function paint() {
             data.push(processedItem);
         }
 
-        var councilNames = d3.keys(data[0]).filter(function (key) {
+        var dataHeadings = d3.keys(data[0]).filter(function (key) {
             return key !== "Council";
         });
 
@@ -217,8 +219,8 @@ function paint() {
         }
 
         // get the x and y values for least squares
-        console.log(councilNames)
-        var xSeries = d3.range(1, councilNames.length + 1);
+        console.log(dataHeadings)
+        var xSeries = d3.range(1, dataHeadings.length + 1);
         var ySeries = data.map(function(d) { return parseFloat(d[selected_column_name]); });
 
         console.log(xSeries);
@@ -226,16 +228,23 @@ function paint() {
         var leastSquaresCoeff = leastSquares(xSeries, ySeries);
 
         // apply the reults of the least squares regression
-        var vx1 = councilNames[0];
+        var vx1 = dataHeadings[0];
         var vy1 = leastSquaresCoeff[0] + leastSquaresCoeff[1];
-        var vx2 = councilNames[councilNames.length - 1];
+        var vx2 = dataHeadings[dataHeadings.length - 1];
         var vy2 = leastSquaresCoeff[0] * xSeries.length + leastSquaresCoeff[1];
         var trendData = [[vx1,vy1,vx2,vy2]];
 
 
+        // We care about all columns except the one where the we specify the name of the council.
+        var dataHeadings = d3.keys(data[0]).filter(function (key) {
+            return key !== "Council";
+        });
+
+        console.log(dataHeadings);  // Array [ "Yes Percentage(%)", "Employment domain 2012 rate (%)", ... ]
+
 
         data.forEach(function (d) {
-            d.percentYesVotes = councilNames.map(function (name) {
+            d.percentYesVotes = dataHeadings.map(function (name) {
                 return {name: name, value: +d[name]};
             });
         });
@@ -243,8 +252,8 @@ function paint() {
 
 
         x0.domain(data.map(function(d) { return d.Council; }));
-        x1.domain(councilNames).rangeRoundBands([0, x0.rangeBand()]);
-        y.domain([0, 100]); // Domain we map to for percentages.
+        x1.domain(dataHeadings).rangeRoundBands([0, x0.rangeBand()]);
+		y.domain([0, 100]); // Domain we map to for percentages.
         y2.domain([0, d3.max(data, function (d) {
             return d3.max(d.percentYesVotes, function (d) {
                 if (d.name == selected_column_name) {  // TODO: change this to the selected column name
@@ -287,7 +296,7 @@ function paint() {
                 .attr("y", 6)
                 .attr("dy", ".71em")
                 .style("text-anchor", "end")
-                .text("Percentage Yes Votes");
+                .text("Yes Votes (%)");
 
         svg.append("g")
                 .attr("class", "y2 axis")
@@ -312,7 +321,6 @@ function paint() {
 
         Council.selectAll("rect")
                 .data(function (d) {
-                    // TODO we need to fix the data in here so that it only contains the required information
                     return d.percentYesVotes;
                 })
                 .enter().append("rect")
@@ -344,7 +352,7 @@ function paint() {
 
         var SPACING_BETWEEN_KEYS = 20;
         var legend = svg.selectAll(".legend")
-                .data(councilNames.slice().reverse())
+                .data(dataHeadings.slice().reverse())
                 .enter().append("g")
                 .attr("class", "legend")
                 .attr("transform", "rotate(-90)")
@@ -354,14 +362,15 @@ function paint() {
 
         // Colours in the key (at the top right of the graph)
         legend.append("rect")
-                .attr("x", width - 208)
+                .attr("x", width - 64)
+                .attr("y", 18)
                 .attr("width", 18)
                 .attr("height", 18)
                 .style("fill", color);
 
         legend.append("text")
-                .attr("x", width - 24)
-                .attr("y", 9)
+                .attr("x", width - 68)
+                .attr("y", 24)
                 .attr("dy", ".35em")
                 .style("text-anchor", "end")
                 .text(function (d) {
@@ -386,21 +395,52 @@ function paint() {
 
 }
 
-
-// Start of jQuery
-$(function() {
-    paint();
-    selected_column_name = "Employment domain 2012 rate (%)";
-    var selectedCol = $('#selected-col');
-    selectedCol.text(selected_column_name);
-
-    $('.columnOption').bind('click', function(e) {
-        e.preventDefault();
-        selected_column_name = this.text;
-        selectedCol.text(selected_column_name);
-        d3.select("svg").remove();
+    // Start of jQuery
+    $(function() {
         paint();
-    });
+        selected_column_name = "nothing";
+        var selectedCol = $('#selected-col');
+        selectedCol.text(selected_column_name);
+
+        // The mappings of the categories to the list of values
+        var categories = {};
+        categories['Employment'] = ['Employment domain 2012 rate (%)', 'Employment domain 2012 rank'];
+        categories['Education'] = ['Education, Skills and Training domain 2012 rank1', 'People aged 16-19 not in full time education, employment or training rate'];
+        categories['Income'] = ['Income domain 2012 rate (%)', 'Income domain 2012 rank'];
+
+        var categoryDropdown = $('#category-dropdown');
+        $.each(categories, function(category) {
+            categoryDropdown.append('<li role="presentation"><a class="categoryOption" role="menuitem" tabindex="-1" href="#">' + category + '</a></li>');
+        });
+
+
+        var columnDropdown = $('#column-dropdown')
+
+        var categoryDropdownButton = $('#category-dropdown-button');
+        var columnDropdownButton = $('#column-dropdown-button');
+
+        $('.categoryOption').on('click', function (e) {
+            // Refresh the columns list
+            columnDropdown.html('');
+            var columns = categories[this.text];
+            console.log(columns);
+            categoryDropdownButton.html(this.text + ' <span class="caret"></span>');
+            columnDropdownButton.html('Select a column <span class="caret"></span>');
+            for (var colIdx = 0; colIdx < columns.length; colIdx++) {
+                console.log(columns[colIdx]);
+                columnDropdown.append('<li role="presentation"><a class="columnOption" role="menuitem" tabindex="-1" href="#">' + columns[colIdx] + '</a></li>')
+            }
+
+            $('.columnOption').bind('click', function(e) {
+                console.log("selected a column");
+                selected_column_name = this.text;
+                selectedCol.text(selected_column_name);
+                columnDropdownButton.html(selected_column_name + ' <span class="caret"></span>');
+                d3.select("svg").remove();
+                paint();
+            });
+        });
+
 
 });
 
