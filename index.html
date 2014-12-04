@@ -199,7 +199,6 @@ function paint() {
                         keys.push(k);
                     }
                 }
-                console.log(d);
                 var tooltipHtml = "<strong>" + keys[0] + "</strong>: <span style='color:yellow'>" + d[keys[0]] + "</span><br/>" +
                         "<strong>" + keys[1] + "</strong>: <span style='color:yellow'>" + d[keys[1]] + "</span><br/>";
 
@@ -247,8 +246,6 @@ function paint() {
         var dataHeadings = d3.keys(data[0]).filter(function (key) {
             return key !== "Council";
         });
-
-        console.log(dataHeadings);  // Array [ "Yes Percentage(%)", "Employment domain 2012 rate (%)", ... ]
 
         data.forEach(function (d) {
             d.percentYesVotes = dataHeadings.map(function (name) {
@@ -416,16 +413,13 @@ function paint() {
             // Refresh the columns list
             columnDropdown.html('');
             var columns = categories[this.text];
-            console.log(columns);
             categoryDropdownButton.html(this.text + ' <span class="caret"></span>');
             columnDropdownButton.html('Select a column <span class="caret"></span>');
             for (var colIdx = 0; colIdx < columns.length; colIdx++) {
-                console.log(columns[colIdx]);
                 columnDropdown.append('<li role="presentation"><a class="columnOption" role="menuitem" tabindex="-1" href="#">' + columns[colIdx] + '</a></li>')
             }
 
             $('.columnOption').bind('click', function(e) {
-                console.log("selected a column");
                 selected_column_name = this.text;
                 selectedCol.text(selected_column_name);
                 columnDropdownButton.html(selected_column_name + ' <span class="caret"></span>');
