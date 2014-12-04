@@ -37,6 +37,37 @@
         .btn {
             width: 246px;
         }
+
+        .d3-tip {
+            line-height: 1;
+            font-weight: bold;
+            padding: 12px;
+            font-size: 11px;
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            border-radius: 2px;
+        }
+
+        /* Creates a small triangle extender for the tooltip */
+        .d3-tip:after {
+            box-sizing: border-box;
+            display: inline;
+            font-size: 10px;
+            width: 100%;
+            line-height: 1;
+            color: rgba(0, 0, 0, 0.8);
+            content: "\25BC";
+            position: absolute;
+            text-align: center;
+        }
+
+        /* Style northward tooltips differently */
+        .d3-tip.n:after {
+            margin: -1px 0 0 0;
+            top: 100%;
+            left: 0;
+        }
+
     </style>
 
 </head>
@@ -115,6 +146,7 @@
 <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
 <script src="d3.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/d3-tip/0.6.3/d3-tip.min.js"></script>
 
 <script type="text/javascript">
 
@@ -157,11 +189,35 @@ function paint() {
             .orient("right")
             .tickFormat(d3.format(".2s"));
 
+    var tip = d3.tip()
+            .attr('class', 'd3-tip')
+            .offset([-15, 0])
+            .html(function(d) {
+                var keys = [];
+                for (var k in d) {
+                    if (k !== "percentYesVotes") {
+                        keys.push(k);
+                    }
+                }
+                console.log(d);
+                var tooltipHtml = "<strong>" + keys[0] + "</strong>: <span style='color:yellow'>" + d[keys[0]] + "</span><br/>" +
+                        "<strong>" + keys[1] + "</strong>: <span style='color:yellow'>" + d[keys[1]] + "</span><br/>";
+
+                if (keys[2] !== "nothing") {
+                    var formattedVal = parseFloat(d[keys[2]], 10).toFixed(2);
+
+                    tooltipHtml += "<strong>" + keys[2] + "</strong>: <span style='color:yellow'>" + formattedVal + "</span>";
+                }
+                return tooltipHtml;
+            });
+
     var svg = d3.select("#referendumGraph").append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
             .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    svg.call(tip);
 
      function make_y_axis() {
         return d3.svg.axis()
@@ -231,7 +287,7 @@ function paint() {
         .call(make_y_axis()
         .tickSize(-width, 0, 0)
         .tickFormat("")
-        )
+        );
 
         // The label "Percentage Yes Votes"
         svg.append("g")
@@ -261,7 +317,9 @@ function paint() {
                 .attr("class", "g")
                 .attr("transform", function (d) {
                     return "translate(" + x0(d.Council) + ",0)";
-                });
+                })
+                .on('mouseover', tip.show)
+                .on('mouseout', tip.hide);
 
         var elementCounter = 0;
 
@@ -295,6 +353,7 @@ function paint() {
                 .style("fill", function (d) {
                     return color(d.name);
                 });
+
 
         var SPACING_BETWEEN_KEYS = 20;
         var legend = svg.selectAll(".legend")
