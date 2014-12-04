@@ -172,8 +172,10 @@ function paint() {
     var y2 = d3.scale.linear()
             .range([height, 0]);
 
-    var color = d3.scale.ordinal()
-            .range(["#1C67B8", "#B81C55"]);
+    var barColours = ["#1C67B8", "#B81C55"];
+
+    var colour = d3.scale.ordinal()
+            .range(barColours);
 
     var xAxis = d3.svg.axis()
             .scale(x0)
@@ -348,7 +350,7 @@ function paint() {
                     }
                 })
                 .style("fill", function (d) {
-                    return color(d.name);
+                    return colour(d.name);
                 });
 
 
@@ -368,7 +370,7 @@ function paint() {
                 .attr("y", 18)
                 .attr("width", 18)
                 .attr("height", 18)
-                .style("fill", color);
+                .style("fill", colour);
 
         legend.append("text")
                 .attr("x", width - 68)
