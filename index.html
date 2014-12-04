@@ -26,8 +26,8 @@
         }
 
         .grid .tick {
-            stroke: lightblue;
-            stroke-opacity: 0.7;
+            stroke: #e0e0e0;
+            stroke-opacity: 0.9;
             shape-rendering: crispEdges;
         }
         .grid path {
@@ -52,7 +52,7 @@
         .d3-tip:after {
             box-sizing: border-box;
             display: inline;
-            font-size: 10px;
+            font-size: 9px;
             width: 100%;
             line-height: 1;
             color: rgba(0, 0, 0, 0.8);
@@ -129,7 +129,7 @@
                         </div>
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox"> Show grid lines
+                                <input id="grid-line-checkbox" type="checkbox" checked> Show grid lines
                             </label>
                         </div>
                     </div>
@@ -405,6 +405,12 @@ function paint() {
             categoryDropdown.append('<li role="presentation"><a class="categoryOption" role="menuitem" tabindex="-1" href="#">' + category + '</a></li>');
         });
 
+
+
+        // Hide or show the gridlines
+        $('#grid-line-checkbox').change(function(e) {
+            $('.grid').toggle();
+        });
 
         var columnDropdown = $('#column-dropdown')
 
