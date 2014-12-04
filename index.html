@@ -35,7 +35,7 @@
         }
 
         .btn {
-            width: 246px;
+            max-width: 246px;
         }
 
         .d3-tip {
@@ -432,7 +432,7 @@ function paint() {
             $('.columnOption').bind('click', function(e) {
                 selected_column_name = this.text;
                 selectedCol.text(selected_column_name);
-                columnDropdownButton.html(selected_column_name + ' <span class="caret"></span>');
+                columnDropdownButton.html(selected_column_name.substr(0, 20) + "..." + ' <span class="caret"></span>');
                 d3.select("svg").remove();
                 paint();
             });
