@@ -412,10 +412,11 @@ function paint() {
             $('.grid').toggle();
         });
 
-        var columnDropdown = $('#column-dropdown')
+        var columnDropdown = $('#column-dropdown');
 
         var categoryDropdownButton = $('#category-dropdown-button');
         var columnDropdownButton = $('#column-dropdown-button');
+        columnDropdownButton.prop('disabled', true);
 
         $('.categoryOption').on('click', function (e) {
             // Refresh the columns list
@@ -426,6 +427,7 @@ function paint() {
             for (var colIdx = 0; colIdx < columns.length; colIdx++) {
                 columnDropdown.append('<li role="presentation"><a class="columnOption" role="menuitem" tabindex="-1" href="#">' + columns[colIdx] + '</a></li>')
             }
+            columnDropdownButton.prop('disabled', false);
 
             $('.columnOption').bind('click', function(e) {
                 selected_column_name = this.text;
